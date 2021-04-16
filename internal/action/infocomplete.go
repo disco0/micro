@@ -171,6 +171,29 @@ func contains(s []string, e string) bool {
 	return false
 }
 
+// Listable options set
+var listableOptions = []string{ "colorscheme", "filetype" }
+
+// ListableOptionComplete autocompletes options indended for list command
+func ListableOptionComplete(b *buffer.Buffer) ([]string, []string) {
+	c := b.GetActiveCursor()
+	input, argstart := buffer.GetArg(b)
+
+	var suggestions []string
+	for _, option := range listableOptions {
+		if strings.HasPrefix(option, input) {
+			suggestions = append(suggestions, option)
+		}
+	}
+
+	sort.Strings(suggestions)
+	completions := make([]string, len(suggestions))
+	for i := range suggestions {
+		completions[i] = util.SliceEndStr(suggestions[i], c.X-argstart)
+	}
+	return completions, suggestions
+}
+
 // OptionComplete autocompletes options
 func OptionComplete(b *buffer.Buffer) ([]string, []string) {
 	c := b.GetActiveCursor()

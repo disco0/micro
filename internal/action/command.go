@@ -63,6 +63,7 @@ func InitCommands() {
 		"retab":      {(*BufPane).RetabCmd, nil},
 		"raw":        {(*BufPane).RawCmd, nil},
 		"textfilter": {(*BufPane).TextFilterCmd, nil},
+		"list":       {(*BufPane).ListCmd, OptionComplete},
 	}
 }
 
@@ -154,6 +155,20 @@ func (h *BufPane) TextFilterCmd(args []string) {
 	}
 	h.Cursor.DeleteSelection()
 	h.Buf.Insert(h.Cursor.Loc, bout.String())
+}
+
+// ListCmd returns list of available values for an option. Indended for `colorscheme` and `filetype`
+// options.
+func (h *BufPane) ListCmd(args []string) {
+	if len(args) == 0 {
+		InfoBar.Error("usage: list option")
+		return
+	}
+
+	if len(args[0]) <= 0 {
+		InfoBar.Error("Invalid option argument: empty string")
+		return
+	}
 }
 
 // TabMoveCmd moves the current tab to a given index (starts at 1). The
